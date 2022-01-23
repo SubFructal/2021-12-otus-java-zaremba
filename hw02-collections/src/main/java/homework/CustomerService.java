@@ -6,7 +6,7 @@ public class CustomerService {
 
     //todo: 3. надо реализовать методы этого класса
     //важно подобрать подходящую Map-у, посмотрите на редко используемые методы, они тут полезны
-    private TreeMap<Customer, String> customerStringMap = new TreeMap<>(new Comparator<Customer>() {
+    private final TreeMap<Customer, String> customerStringMap = new TreeMap<>(new Comparator<Customer>() {
         @Override
         public int compare(Customer o1, Customer o2) {
             return (int) (o1.getScores() - o2.getScores());
