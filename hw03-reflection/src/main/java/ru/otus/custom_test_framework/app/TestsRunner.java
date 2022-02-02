@@ -76,7 +76,7 @@ public class TestsRunner {
 
     private Object callMethod(Method method, Object object, Object... args) {
         try {
-            return method.invoke(object);
+            return method.invoke(object, args);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
