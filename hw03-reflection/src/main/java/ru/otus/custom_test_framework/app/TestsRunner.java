@@ -78,8 +78,8 @@ public class TestsRunner {
     }
 
     private void printTestsResult(TestsResult testsResult) {
-        System.out.printf("%nTests result: all tests count = %d," +
-                        "passed tests count = %d," + "failed tests count = %d", testsResult.getAllTestsQuantity(),
+        System.out.printf("%nTests result: all tests count = %d, " +
+                        "passed tests count = %d, failed tests count = %d", testsResult.getAllTestsQuantity(),
                 testsResult.getPassedTestsQuantity(), testsResult.getFailedTestsQuantity());
     }
 
