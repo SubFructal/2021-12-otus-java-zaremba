@@ -1,0 +1,46 @@
+heap size               result
+
+-Xms256m                Exception in thread "main" java.lang.OutOfMemoryError: Java heap space
+-Xmx256m
+
+-Xms384m                spend msec:22115, sec:22
+-Xmx384m
+
+-Xms512m                spend msec:20690, sec:20
+-Xmx512m
+
+-Xms640m                spend msec:19980, sec:19
+-Xmx640m
+
+-Xms768m                spend msec:19365, sec:19
+-Xmx768m
+
+-Xms896m                spend msec:18968, sec:18
+-Xmx896m
+
+-Xms1024m               spend msec:18301, sec:18
+-Xmx1024m
+
+-Xms1152m               spend msec:18213, sec:18
+-Xmx1152m
+
+-Xms1280m               spend msec:16320, sec:17
+-Xmx1280m
+
+-Xms1408m               spend msec:18061, sec:18
+-Xmx1408m
+
+-Xms1536m               spend msec:17724, sec:17
+-Xmx1536m
+
+-Xms1664m               spend msec:13584, sec:17
+-Xmx1664m
+
+-Xms1792m               spend msec:15688, sec:16        optimal heap's size
+-Xmx1792m
+
+-Xms1920m               spend msec:17574, sec:17
+-Xmx1920m
+
+-Xms2048m               spend msec:17261, sec:17
+-Xmx2048m
