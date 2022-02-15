@@ -1,4 +1,4 @@
-package ru.otus.aop.proxy;
+package ru.otus.aop.proxy.api;
 
 public interface TestLogging {
 
