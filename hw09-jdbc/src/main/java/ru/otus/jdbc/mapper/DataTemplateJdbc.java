@@ -4,12 +4,16 @@ import ru.otus.core.repository.DataTemplate;
 import ru.otus.core.repository.DataTemplateException;
 import ru.otus.core.repository.executor.DbExecutor;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -33,14 +37,7 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
         return dbExecutor.executeSelect(connection, entitySQLMetaData.getSelectByIdSql(), List.of(id), resultSet -> {
             try {
                 if (resultSet.next()) {
-                    var params = entityClassMetaData.getAllFields().stream().map(field -> {
-                        try {
-                            return resultSet.getObject(field.getName());
-                        } catch (SQLException e) {
-                            throw new DataTemplateException(e);
-                        }
-                    }).toList().toArray();
-                    return entityClassMetaData.getConstructor().newInstance(params);
+                    return createObject(entityClassMetaData, resultSet);
                 }
                 return null;
             } catch (Exception e) {
@@ -51,38 +48,25 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
 
     @Override
     public List<T> findAll(Connection connection) {
-        return dbExecutor.executeSelect(connection, entitySQLMetaData.getSelectAllSql(), Collections.emptyList(), rs -> {
-            var entities = new ArrayList<T>();
-            try {
-                while (rs.next()) {
-                    var params = entityClassMetaData.getAllFields().stream().map(field -> {
-                        try {
-                            return rs.getObject(field.getName());
-                        } catch (SQLException e) {
-                            throw new DataTemplateException(e);
+        return dbExecutor.executeSelect(connection, entitySQLMetaData.getSelectAllSql(), Collections.emptyList(),
+                resultSet -> {
+                    var objects = new ArrayList<T>();
+                    try {
+                        while (resultSet.next()) {
+                            var newObject = createObject(entityClassMetaData, resultSet);
+                            objects.add(newObject);
                         }
-                    }).toList().toArray();
-                    var entity = entityClassMetaData.getConstructor().newInstance(params);
-                    entities.add(entity);
-                }
-                return entities;
-            } catch (Exception e) {
-                throw new DataTemplateException(e);
-            }
-        }).orElseThrow(() -> new RuntimeException("Unexpected error"));
+                        return objects;
+                    } catch (Exception e) {
+                        throw new DataTemplateException(e);
+                    }
+                }).orElseThrow(() -> new RuntimeException("Unexpected error"));
     }
 
     @Override
     public long insert(Connection connection, T object) {
         try {
-            var values = entityClassMetaData.getFieldsWithoutId().stream().map(field -> {
-                field.setAccessible(true);
-                try {
-                    return field.get(object);
-                } catch (Exception e) {
-                    throw new DataTemplateException(e);
-                }
-            }).collect(Collectors.toList());
+            var values = getParamsValues(object);
             return dbExecutor.executeStatement(connection, entitySQLMetaData.getInsertSql(), values);
         } catch (Exception e) {
             throw new DataTemplateException(e);
@@ -92,18 +76,39 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
     @Override
     public void update(Connection connection, T object) {
         try {
-            var values = entityClassMetaData.getAllFields().stream().map(field -> {
-                field.setAccessible(true);
-                try {
-                    return field.get(object);
-                } catch (Exception e) {
-                    throw new DataTemplateException(e);
-                }
-            }).collect(Collectors.toList());
-            Collections.rotate(values, values.size() - 1);
+            var values = getParamsValues(object);
+            var idField = entityClassMetaData.getIdField();
+            idField.setAccessible(true);
+            var idFieldValue = idField.get(object);
+            values.add(idFieldValue);
             dbExecutor.executeStatement(connection, entitySQLMetaData.getUpdateSql(), values);
         } catch (Exception e) {
             throw new DataTemplateException(e);
         }
+    }
+
+    private T createObject(EntityClassMetaData<T> entityClassMetaData, ResultSet resultSet)
+            throws InvocationTargetException, InstantiationException, IllegalAccessException {
+        var newObject = entityClassMetaData.getConstructor().newInstance();
+        entityClassMetaData.getAllFields().forEach(field -> {
+            try {
+                field.setAccessible(true);
+                field.set(newObject, resultSet.getObject(field.getName()));
+            } catch (Exception e) {
+                throw new DataTemplateException(e);
+            }
+        });
+        return newObject;
+    }
+
+    private List<Object> getParamsValues(T object) {
+        return entityClassMetaData.getFieldsWithoutId().stream().map(field -> {
+            field.setAccessible(true);
+            try {
+                return field.get(object);
+            } catch (Exception e) {
+                throw new DataTemplateException(e);
+            }
+        }).collect(Collectors.toList());
     }
 }
