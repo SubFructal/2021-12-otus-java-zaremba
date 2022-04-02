@@ -89,29 +89,4 @@ public class EntitySQLMetaDataImpl<T> implements EntitySQLMetaData {
         return preparedOperators.get(inputClassName);
     }
 
-    public static void main(String[] args) {
-        var entityClassMetaData = new EntityClassMetaDataImpl<>(new Client());
-        var entitySql = new EntitySQLMetaDataImpl<>(entityClassMetaData);
-
-        System.out.println(entitySql.getSelectAllSql());
-        System.out.println(entitySql.getSelectByIdSql());
-        System.out.println(SELECT_ALL_SQL_OPERATORS.keySet());
-        System.out.println(SELECT_ALL_SQL_OPERATORS.values());
-        System.out.println("******");
-
-        var entityClassMetaData2 = new EntityClassMetaDataImpl<>(new Manager());
-        var entitySql2 = new EntitySQLMetaDataImpl<>(entityClassMetaData2);
-
-        System.out.println(entitySql2.getInsertSql());
-        System.out.println(SELECT_ALL_SQL_OPERATORS.keySet());
-        System.out.println(SELECT_ALL_SQL_OPERATORS.values());
-        System.out.println("******");
-
-        var entityClassMetaData3 = new EntityClassMetaDataImpl<>(new Client());
-        var entitySql3 = new EntitySQLMetaDataImpl<>(entityClassMetaData3);
-
-        System.out.println(entitySql3.getSelectAllSql());
-        System.out.println(SELECT_ALL_SQL_OPERATORS.keySet());
-        System.out.println(SELECT_ALL_SQL_OPERATORS.values());
-    }
 }

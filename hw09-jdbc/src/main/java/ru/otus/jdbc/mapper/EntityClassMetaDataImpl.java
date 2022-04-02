@@ -101,37 +101,4 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
         return CONSTRUCTORS.get(inputClassName);
     }
 
-//    public static void main(String[] args) {
-//        var first = new EntityClassMetaDataImpl<>(new Client());
-//        var second = new EntityClassMetaDataImpl<>(new Client("test"));
-//        var second2 = new EntityClassMetaDataImpl<>(new Client(12l, "test"));
-//        var third = new EntityClassMetaDataImpl<>(new Manager());
-//        var forth = new EntityClassMetaDataImpl<>(new Manager(1l, "label", "name"));
-//        var fifth = new EntityClassMetaDataImpl<>(new Manager("label2"));
-//
-//        System.out.println(first.inputClassName);
-//        System.out.println(second.inputClassName);
-//        System.out.println(second2.inputClassName);
-//        System.out.println(third.inputClassName);
-//        System.out.println(forth.inputClassName);
-//        System.out.println(fifth.inputClassName);
-//
-//        first.getConstructor();
-//        second.getConstructor();
-//        second2.getConstructor();
-//
-//        third.getConstructor();
-//        forth.getConstructor();
-//        fifth.getConstructor();
-//
-//        first.getIdField();
-//        second.getIdField();
-//        second2.getIdField();
-//        third.getIdField();
-//        forth.getIdField();
-//        fifth.getIdField();
-//
-//        System.out.println(CONSTRUCTORS);
-//        System.out.println(ID_FIELDS);
-//    }
 }
