@@ -1,104 +1,68 @@
 package ru.otus.jdbc.mapper;
 
-import ru.otus.crm.model.Id;
+import ru.otus.jdbc.annotations.Id;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
 
-    private final T entity;
+    private final Constructor<T> constructor;
+    private final Field idField;
+    private final List<Field> allFields;
+    private final List<Field> fieldsWithoutId;
+    private final String objectClassName;
 
-    private static final Map<String, Constructor<?>> CONSTRUCTORS = new HashMap<>();
-    private static final Map<String, Field> ID_FIELDS = new HashMap<>();
-    private static final Map<String, List<Field>> ALL_FIELDS_KITS = new HashMap<>();
-    private static final Map<String, List<Field>> FIELDS_WITHOUT_ID_KITS = new HashMap<>();
-    private final String inputClassName;
+    public EntityClassMetaDataImpl(Class<T> objectClass) {
+        this.objectClassName = objectClass.getSimpleName();
+        this.constructor = initConstructor(objectClass);
+        this.allFields = Arrays.stream(objectClass.getDeclaredFields()).toList();
+        this.idField = initIdField(allFields);
+        this.fieldsWithoutId = initIdFieldsWithoutId(allFields);
+    }
 
-    public EntityClassMetaDataImpl(T object) {
-        this.entity = object;
-        inputClassName = this.getName();
+    private Constructor<T> initConstructor(Class<T> objectClass) {
+        try {
+            return objectClass.getDeclaredConstructor();
+        } catch (NoSuchMethodException e) {
+            throw new IllegalArgumentException("Given class doesn't has empty constructor");
+        }
+    }
+
+    private Field initIdField(List<Field> allFields) {
+        return allFields.stream().filter(field -> field.isAnnotationPresent(Id.class))
+                .findFirst().orElseThrow(() -> new IllegalArgumentException("Class fields don't have id field"));
+    }
+
+    private List<Field> initIdFieldsWithoutId(List<Field> allFields) {
+        return allFields.stream().filter(field -> !field.isAnnotationPresent(Id.class)).toList();
     }
 
     @Override
     public String getName() {
-        return entity.getClass().getSimpleName();
+        return objectClassName;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Constructor<T> getConstructor() {
-        if (containsInPrepared(CONSTRUCTORS, inputClassName)) {
-            return (Constructor<T>) getFromPreparedConstructors(inputClassName);
-        }
-        var newConstructor = Arrays.stream(entity.getClass().getConstructors())
-                .filter(constructor -> constructor.getParameterCount() == 0).toList().get(0);
-        addToPrepared(inputClassName, newConstructor);
-        return (Constructor<T>) newConstructor;
+        return constructor;
     }
 
     @Override
     public Field getIdField() {
-        if (containsInPrepared(ID_FIELDS, inputClassName)) {
-            return getFromPreparedIdFields(inputClassName);
-        }
-        var newIdField = getAllFields().stream()
-                .filter(field -> field.isAnnotationPresent(Id.class)).toList().get(0);
-        addToPrepared(inputClassName, newIdField);
-        return newIdField;
+        return idField;
     }
 
     @Override
     public List<Field> getAllFields() {
-        if (containsInPrepared(ALL_FIELDS_KITS, inputClassName)) {
-            return getFromPreparedFieldsKits(ALL_FIELDS_KITS, inputClassName);
-        }
-        var newAllFieldsKit = List.of(entity.getClass().getDeclaredFields());
-        addToPrepared(ALL_FIELDS_KITS, inputClassName, newAllFieldsKit);
-        return newAllFieldsKit;
+        return allFields;
     }
 
     @Override
     public List<Field> getFieldsWithoutId() {
-        if (containsInPrepared(FIELDS_WITHOUT_ID_KITS, inputClassName)) {
-            return getFromPreparedFieldsKits(FIELDS_WITHOUT_ID_KITS, inputClassName);
-        }
-        var newFieldsWithoutId = getAllFields().stream()
-                .filter(field -> !field.isAnnotationPresent(Id.class)).toList();
-        addToPrepared(FIELDS_WITHOUT_ID_KITS, inputClassName, newFieldsWithoutId);
-        return newFieldsWithoutId;
-    }
-
-    private boolean containsInPrepared(Map<String, ?> preparedKits, String inputClassName) {
-        return preparedKits.containsKey(inputClassName);
-    }
-
-    private void addToPrepared(Map<String, List<Field>> preparedEntities, String inputClassName, List<Field> entity) {
-        preparedEntities.put(inputClassName, entity);
-    }
-
-    private void addToPrepared(String inputClassName, Field entity) {
-        ID_FIELDS.put(inputClassName, entity);
-    }
-
-    private void addToPrepared(String inputClassName, Constructor<?> entity) {
-        CONSTRUCTORS.put(inputClassName, entity);
-    }
-
-    private List<Field> getFromPreparedFieldsKits(Map<String, List<Field>> preparedEntities, String inputClassName) {
-        return preparedEntities.get(inputClassName);
-    }
-
-    private Field getFromPreparedIdFields(String inputClassName) {
-        return ID_FIELDS.get(inputClassName);
-    }
-
-    private Constructor<?> getFromPreparedConstructors(String inputClassName) {
-        return CONSTRUCTORS.get(inputClassName);
+        return fieldsWithoutId;
     }
 
 }
