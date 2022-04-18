@@ -45,7 +45,6 @@ public class Address implements Cloneable {
         return "Address{" +
                 "id=" + id +
                 ", street='" + street + '\'' +
-                ", client=" + client +
                 '}';
     }
 }

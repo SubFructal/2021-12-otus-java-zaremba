@@ -46,7 +46,6 @@ public class Phone implements Cloneable {
         return "Phone{" +
                 "id=" + id +
                 ", number='" + number + '\'' +
-                ", client=" + client +
                 '}';
     }
 }
