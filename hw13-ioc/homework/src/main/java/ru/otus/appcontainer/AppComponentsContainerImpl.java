@@ -5,6 +5,7 @@ import ru.otus.appcontainer.api.AppComponentsContainer;
 import ru.otus.appcontainer.api.AppComponentsContainerConfig;
 import ru.otus.helpers.ReflectionHelper;
 
+import java.lang.reflect.Parameter;
 import java.util.*;
 
 public class AppComponentsContainerImpl implements AppComponentsContainer {
@@ -25,8 +26,8 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
                 .sorted(Comparator.comparingInt(method -> method.getAnnotation(AppComponent.class).order()))
                 .forEach(method -> {
                     try {
-                        var parameters = method.getParameters();
-                        Object[] args = new Object[parameters.length];
+                        Parameter[] parameters = method.getParameters();
+                        var args = new Object[parameters.length];
                         for (int i = 0; i < parameters.length; i++) {
                             args[i] = getAppComponent(parameters[i].getType());
                         }
