@@ -40,7 +40,6 @@ public class ClientController {
 
     @PostMapping("/client/save")
     public RedirectView clientSave(@ModelAttribute ClientDto clientDto) {
-        System.out.println(clientDto);
         dbServiceClient.saveClient(clientDto);
         return new RedirectView("/", true);
     }
