@@ -27,6 +27,7 @@ allprojects {
         dependencies {
             imports {
                 mavenBom("org.springframework.boot:spring-boot-dependencies:2.6.4")
+                mavenBom("com.google.protobuf:protobuf-bom:3.21.1")
             }
             dependency("com.google.guava:guava:${Versions.guava}")
             dependency("org.openjdk.jmh:jmh-core:${Versions.jmh}")
@@ -34,7 +35,7 @@ allprojects {
             dependency("org.openjdk.jol:jol-core:${Versions.jol}")
             dependency("org.ow2.asm:asm-commons:${Versions.asm}")
             dependency("org.glassfish:javax.json:${Versions.glassfishJson}")
-            dependency("com.google.protobuf:protobuf-java-util:${Versions.protobuf}")
+//            dependency("com.google.protobuf:protobuf-java-util:${Versions.protobuf}")
 
             dependency("org.testcontainers:junit-jupiter:${Versions.testcontainers}")
             dependency("org.testcontainers:postgresql:${Versions.testcontainers}")
@@ -59,6 +60,10 @@ allprojects {
             dependency("org.springdoc:springdoc-openapi-ui:${Versions.springDocOpenapiUi}")
 
             dependency("com.google.code.findbugs:jsr305:${Versions.jsr305}")
+
+            dependency("io.grpc:grpc-netty:${Versions.grpc}")
+            dependency("io.grpc:grpc-protobuf:${Versions.grpc}")
+            dependency("io.grpc:grpc-stub:${Versions.grpc}")
         }
     }
 
@@ -75,6 +80,7 @@ allprojects {
             force("org.codehaus.jettison:jettison:1.1")
             force("net.java.dev.jna:jna:5.8.0")
             force("com.google.errorprone:error_prone_annotations:2.11.0")
+            force("org.ow2.asm:asm:9.1")
         }
     }
 }
