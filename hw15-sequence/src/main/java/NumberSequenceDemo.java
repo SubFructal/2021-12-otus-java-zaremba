@@ -3,8 +3,8 @@ import org.slf4j.LoggerFactory;
 
 public class NumberSequenceDemo {
     private static final Logger logger = LoggerFactory.getLogger(NumberSequenceDemo.class);
+    private static final int LAST_VALUE = 10;
     private int id = 2;
-    private final int LAST = 10;
     private int count = 1;
     private int increment = 1;
 
@@ -17,7 +17,7 @@ public class NumberSequenceDemo {
                 logger.info(String.valueOf(count));
                 if (this.id != 2) {
                     var newValue = count + increment;
-                    if (newValue == 0 || newValue > 10) this.increment *= -1;
+                    if (newValue == 0 || newValue > LAST_VALUE) this.increment *= -1;
                     count += increment;
                 }
 
@@ -33,8 +33,8 @@ public class NumberSequenceDemo {
 
     public static void main(String[] args) {
         NumberSequenceDemo numberSequence = new NumberSequenceDemo();
-        new Thread(() -> numberSequence.action(1), "th1").start();
-        new Thread(() -> numberSequence.action(2), "th2").start();
+        new Thread(() -> numberSequence.action(1), "thread1").start();
+        new Thread(() -> numberSequence.action(2), "thread2").start();
 
     }
 
