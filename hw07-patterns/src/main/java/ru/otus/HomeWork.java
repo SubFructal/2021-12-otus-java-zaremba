@@ -1,5 +1,16 @@
 package ru.otus;
 
+import lombok.extern.slf4j.Slf4j;
+import ru.otus.handler.ComplexProcessor;
+import ru.otus.listener.homework.HistoryListener;
+import ru.otus.model.Message;
+import ru.otus.processor.homework.ProcessorChangeFieldValues;
+import ru.otus.processor.homework.ProcessorThrowsEvenSecondException;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Slf4j
 public class HomeWork {
 
     /*
@@ -20,5 +31,24 @@ public class HomeWork {
            по аналогии с Demo.class
            из элеменов "to do" создать new ComplexProcessor и обработать сообщение
          */
+        var processors = List.of(new ProcessorChangeFieldValues(),
+                new ProcessorThrowsEvenSecondException(LocalDateTime::now));
+
+        var complexProcessor = new ComplexProcessor(processors, ex -> {});
+        var historyListener = new HistoryListener();
+        complexProcessor.addListener(historyListener);
+
+        var message = new Message.Builder(1L)
+                .field1("field1")
+                .field2("field2")
+                .field3("field3")
+                .field6("field6")
+                .field10("field10")
+                .build();
+
+        var result = complexProcessor.handle(message);
+        log.info("result:{}", result);
+
+        complexProcessor.removeListener(historyListener);
     }
 }
