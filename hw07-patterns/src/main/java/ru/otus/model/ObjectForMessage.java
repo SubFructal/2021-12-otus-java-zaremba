@@ -8,6 +8,7 @@ public class ObjectForMessage {
     public ObjectForMessage() {
     }
 
+    //копирующий конструктор
     public ObjectForMessage(ObjectForMessage objectForMessage) {
         this.data = List.copyOf(objectForMessage.getData());
     }

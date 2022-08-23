@@ -20,7 +20,7 @@ public class ProcessorThrowsEvenSecondException implements Processor {
         var secondNumber = dateTimeProvider.getDate().get(ChronoField.SECOND_OF_MINUTE);
         if (secondNumber % 2 == 0) {
             log.info("even second:{}", secondNumber);
-            throw new RuntimeException();
+            throw new RuntimeException("RuntimeException");
         }
         log.info("odd second:{}", secondNumber);
         return message;
