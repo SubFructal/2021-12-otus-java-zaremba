@@ -2,7 +2,6 @@ package ru.otus;
 
 import lombok.extern.slf4j.Slf4j;
 import ru.otus.handler.ComplexProcessor;
-import ru.otus.listener.ListenerPrinterConsole;
 import ru.otus.listener.homework.HistoryListener;
 import ru.otus.model.Message;
 import ru.otus.processor.homework.ProcessorChangeFieldValues;
@@ -10,7 +9,6 @@ import ru.otus.processor.homework.ProcessorThrowsEvenSecondException;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.function.Consumer;
 
 @Slf4j
 public class HomeWork {
@@ -22,7 +20,7 @@ public class HomeWork {
        3. Сделать процессор, который будет выбрасывать исключение в четную секунду (сделайте тест с гарантированным результатом)
              Секунда должна определяться во время выполнения.
              Тест - важная часть задания
-             Обязательно посмотрите пример к паттерну Мементо!
+             Обязательно посмотрите пример к паттерну Memento!
        4. Сделать Listener для ведения истории (подумайте, как сделать, чтобы сообщения не портились)
           Уже есть заготовка - класс HistoryListener, надо сделать его реализацию
           Для него уже есть тест, убедитесь, что тест проходит
