@@ -31,7 +31,7 @@ public class HomeWork {
     public static void main(String[] args) {
         /*
            по аналогии с Demo.class
-           из элеменов "to do" создать new ComplexProcessor и обработать сообщение
+           из элементов "to do" создать new ComplexProcessor и обработать сообщение
          */
         var processors = List.of(new ProcessorChangeFieldValues(),
                 new ProcessorThrowsEvenSecondException(LocalDateTime::now));
